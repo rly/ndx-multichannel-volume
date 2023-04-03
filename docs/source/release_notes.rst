@@ -2,4 +2,6 @@ Release Notes
 =============
 
 .. note::
-    Add the release notes of your extension here
+    Release 0.1.0:
+
+    Initial release of extension.
