@@ -25,6 +25,8 @@ import pandas as pd
 import scipy.io as sio
 from datetime import datetime, timedelta
 
+
+
 # Set path of the namespace.yaml file to the expected install location
 MultiChannelVol_specpath = os.path.join(
     os.path.dirname(__file__),
@@ -43,7 +45,6 @@ if not os.path.exists(MultiChannelVol_specpath):
         'ndx-multichannel-volume.namespace.yaml'
     ))
 
-
 # Load the namespace
 load_namespaces(MultiChannelVol_specpath)
 
@@ -52,6 +53,7 @@ load_namespaces(MultiChannelVol_specpath)
 CElegansSubject = get_class('CElegansSubject', 'ndx-multichannel-volume')
 OpticalChannelReferences = get_class('OpticalChannelReferences', 'ndx-multichannel-volume')
 OpticalChannelPlus = get_class('OpticalChannelPlus', 'ndx-multichannel-volume')
+MultiChannelVolumeSeries = get_class('MultiChannelVolumeSeries', 'ndx-multichannel-volume')
 
 @register_class('ImagingVolume', 'ndx-multichannel-volume')
 class ImagingVolume(NWBDataInterface):
@@ -214,7 +216,8 @@ class MultiChannelVolume(NWBDataInterface):
                      'description',
                      'RGBW_channels',
                      'data',
-                     'imaging_volume'
+                     'imaging_volume',
+                     'Order_optical_channels'
                      )
 
     @docval(*get_docval(NWBDataInterface.__init__, 'name'),  # required
@@ -223,6 +226,7 @@ class MultiChannelVolume(NWBDataInterface):
             {'name': 'description', 'type': str, 'doc':'description of image'},
             {'name': 'RGBW_channels', 'doc': 'which channels in image map to RGBW', 'type': 'array_data', 'shape':[None]},
             {'name': 'data', 'doc': 'Volumetric multichannel data', 'type': 'array_data', 'shape':[None]*4},
+            {'name': 'Order_optical_channels', 'type':OpticalChannelReferences, 'doc':'Order of the optical channels in the data'}
     )
     
     def __init__(self, **kwargs):
@@ -230,7 +234,8 @@ class MultiChannelVolume(NWBDataInterface):
                        'description',
                        'RGBW_channels',
                        'data',
-                       'imaging_volume'
+                       'imaging_volume',
+                       'Order_optical_channels'
                        )
         args_to_set = popargs_to_dict(keys_to_set, kwargs)
         super().__init__(**kwargs)

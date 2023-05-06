@@ -36,7 +36,7 @@ setup_args = {
     ],
     'packages': find_packages('src/pynwb', exclude=["tests", "tests.*"]),
     'package_dir': {'': 'src/pynwb'},
-    'package_data': {'MultiChannelVol': [
+    'package_data': {'ndx_multichannel_volume': [
         'spec/ndx-multichannel-volume.namespace.yaml',
         'spec/ndx-multichannel-volume.extensions.yaml',
     ]},
@@ -59,7 +59,7 @@ def _copy_spec_files(project_dir):
     ns_path = os.path.join(project_dir, 'spec', 'ndx-multichannel-volume.namespace.yaml')
     ext_path = os.path.join(project_dir, 'spec', 'ndx-multichannel-volume.extensions.yaml')
 
-    dst_dir = os.path.join(project_dir, 'src', 'pynwb', 'MultiChannelVol', 'spec')
+    dst_dir = os.path.join(project_dir, 'src', 'pynwb', 'ndx_multichannel_volume', 'spec')
     if not os.path.exists(dst_dir):
         os.mkdir(dst_dir)
 

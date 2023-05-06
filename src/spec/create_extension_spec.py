@@ -49,18 +49,21 @@ def main():
                 name = 'growth_stage',
                 dtype = 'text',
                 doc = 'Growth stage of C. elegans. One of two-fold, three-fold, L1-L4, YA, OA, duaer, post-dauer L4, post-dauer YA, post-dauer OA',
+   
             ),
             NWBDatasetSpec(
                 name = 'cultivation_temp',
                 dtype = 'float32',
-                doc = 'Worm cultivation temperature in C'
+                doc = 'Worm cultivation temperature in C',
+                quantity = '?'
             )
         ],
         attributes = [
             NWBAttributeSpec(
                 name = 'growth_stage_time',
                 dtype = 'text',
-                doc = 'amount of time in current growth stage in ISO duration format'
+                doc = 'amount of time in current growth stage in ISO 8601 duration format',
+                required = False
             )
         ]
     )
@@ -107,7 +110,7 @@ def main():
             NWBDatasetSpec(
                 name = 'exposure_time',
                 dtype = 'float32',
-                doc = 'Exposure time of the sample; often the inverse of the frequency.',
+                doc = 'Exposure time of the sample, in seconds; often the inverse of the frequency.',
                 dims = ['channels'],
                 shape = [None],
                 quantity = '?'
@@ -183,6 +186,14 @@ def main():
             )
         ],
 
+        groups = [
+                NWBGroupSpec(
+                name = 'Order_optical_channels',
+                doc = 'Ordered list of names of the optical channels in the data',
+                neurodata_type_inc = 'OpticalChannelReferences',
+            )
+        ],
+
         links = [
             NWBLinkSpec(
                 name = 'imaging_volume',
@@ -253,7 +264,7 @@ def main():
             ),
             NWBGroupSpec(
                 name = 'Order_optical_channels',
-                doc = 'Order of the optical channels in the data',
+                doc = 'Ordered list of names of the optical channels in the data',
                 neurodata_type_inc = 'OpticalChannelReferences',
             )
 
@@ -301,12 +312,12 @@ def main():
         doc = 'wrapper for optical channel references dataset',
         datasets = [
             NWBDatasetSpec(
-            name = 'data',
-            dtype = 'text',
-            dims = ['NumChannels'],
-            shape = [None],
-            doc = 'Ordered list of optical channels'
-            )
+                name = 'channels',
+                dtype = 'text',
+                dims = ['NumChannels'],
+                shape = [None],
+                doc = 'Ordered list of names of optical channels'
+            )     
         ]
     )
 
