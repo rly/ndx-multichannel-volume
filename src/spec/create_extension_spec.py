@@ -21,7 +21,7 @@ def main():
     # this is similar to specifying the Python modules that need to be imported
     # to use your new data types.
     # all types included or used by the types specified here will also be
-    # included. 
+    # included.
     ns_builder.include_type('OpticalChannel', namespace='core')
     ns_builder.include_type('RGBImage', namespace='core')
     ns_builder.include_type('Image', namespace='core')
@@ -49,7 +49,7 @@ def main():
                 name = 'growth_stage',
                 dtype = 'text',
                 doc = 'Growth stage of C. elegans. One of two-fold, three-fold, L1-L4, YA, OA, duaer, post-dauer L4, post-dauer YA, post-dauer OA',
-   
+
             ),
             NWBDatasetSpec(
                 name = 'cultivation_temp',
@@ -186,13 +186,13 @@ def main():
             )
         ],
 
-        groups = [
-                NWBGroupSpec(
-                name = 'Order_optical_channels',
-                doc = 'Ordered list of names of the optical channels in the data',
-                neurodata_type_inc = 'OpticalChannelReferences',
-            )
-        ],
+        # groups = [
+        #         NWBGroupSpec(
+        #         name = 'Order_optical_channels',
+        #         doc = 'Ordered list of names of the optical channels in the data',
+        #         neurodata_type_inc = 'OpticalChannelReferences',
+        #     )
+        # ],
 
         links = [
             NWBLinkSpec(
@@ -253,6 +253,11 @@ def main():
                 dtype = 'text',
                 doc = 'Describes reference frame of origin_coords and grid_spacing. See doc for imaging_plane for more detail and examples.',
                 quantity = '?'
+            ),
+            NWBDatasetSpec(
+                name = 'Order_optical_channels',
+                doc = 'Ordered list of names of the optical channels in the data',
+                neurodata_type_inc = 'OpticalChannelReferences',
             )
         ],
 
@@ -262,11 +267,11 @@ def main():
                 doc = 'An optical channel used to record from an imaging volume',
                 quantity = '*'
             ),
-            NWBGroupSpec(
-                name = 'Order_optical_channels',
-                doc = 'Ordered list of names of the optical channels in the data',
-                neurodata_type_inc = 'OpticalChannelReferences',
-            )
+            # NWBGroupSpec(
+            #     name = 'Order_optical_channels',
+            #     doc = 'Ordered list of names of the optical channels in the data',
+            #     neurodata_type_inc = 'OpticalChannelReferences',
+            # )
 
         ],
 
@@ -306,19 +311,34 @@ def main():
         ]
     )
 
-    OpticalChannelReferences = NWBGroupSpec(
+    # OpticalChannelReferences = NWBGroupSpec(
+    #     neurodata_type_def = 'OpticalChannelReferences',
+    #     neurodata_type_inc = 'NWBDataInterface',
+    #     doc = 'wrapper for optical channel references dataset',
+    #     datasets = [
+    #         NWBDatasetSpec(
+    #             name = 'channels',
+    #             dtype = NWBRefSpec(
+    #                     target_type = 'OpticalChannelPlus',
+    #                     reftype = 'object'
+    #                 ),
+    #             dims = ['NumChannels'],
+    #             shape = [None],
+    #             doc = 'Ordered list of names of optical channels'
+    #         )
+    #     ]
+    # )
+
+    OpticalChannelReferences = NWBDatasetSpec(
         neurodata_type_def = 'OpticalChannelReferences',
-        neurodata_type_inc = 'NWBDataInterface',
-        doc = 'wrapper for optical channel references dataset',
-        datasets = [
-            NWBDatasetSpec(
-                name = 'channels',
-                dtype = 'text',
-                dims = ['NumChannels'],
-                shape = [None],
-                doc = 'Ordered list of names of optical channels'
-            )     
-        ]
+        neurodata_type_inc = 'NWBData',
+        doc = 'Ordered list of names of optical channels',
+        dtype = NWBRefSpec(
+            target_type = 'OpticalChannelPlus',
+            reftype = 'object'
+        ),
+        dims = ['NumChannels'],
+        shape = [None],
     )
 
     VolumeSegmentation = NWBGroupSpec(

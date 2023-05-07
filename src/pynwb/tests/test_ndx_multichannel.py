@@ -9,7 +9,7 @@ from pynwb.ecephys import ElectrodeGroup
 from pynwb.file import ElectrodeTable as get_electrode_table
 from pynwb.testing import TestCase, remove_test_file, AcquisitionH5IOMixin
 
-from MultiChannelVol import CElegansSubject, OpticalChannelReferences, OpticalChannelPlus, ImagingVolume, VolumeSegmentation, MultiChannelVolume
+from ndx_multichannel_volume import CElegansSubject, OpticalChannelReferences, OpticalChannelPlus, ImagingVolume, VolumeSegmentation, MultiChannelVolume
 
 def set_up_nwbfile():
 
@@ -28,7 +28,7 @@ def set_up_nwbfile():
     return nwbfile, device
 
 def create_im_vol(device, channels, location="head", grid_spacing=[0.3208, 0.3208, 0.75], grid_spacing_unit ="micrometers", origin_coords=[0,0,0], origin_coords_unit="micrometers", reference_frame="Worm head, left=anterior, bottom=ventral"):
-    
+
     # channels should be ordered list of tuples (name, description)
 
     OptChannels = []
@@ -47,10 +47,10 @@ def create_im_vol(device, channels, location="head", grid_spacing=[0.3208, 0.320
         )
 
         OptChannels.append(OptChan)
-        OptChanRefData.append(wave)
+        OptChanRefData.append(OptChan)
 
     OpticalChannelRefs = OpticalChannelReferences(
-        name = 'OpticalChannelRefs',
+        name = 'Order_optical_channels',
         data = OptChanRefData
     )
 
@@ -77,7 +77,7 @@ class TestMultiChannelVolumeConstructor(TestCase):
 
     def test_constructor(self):
         """Test that the constructor for each object sets values as expected."""
-        data = np.random.rand(240,1000,50,5)
+        data = np.random.randint(0,100,size=(240,1000,50,5))
         scale = [0.25, 0.3, 1.0]
         session_start = datetime.datetime.now()
 
@@ -116,7 +116,7 @@ class TestMultiChannelVolumeConstructor(TestCase):
             voxel_mask.append([np.uint(x),np.uint(y),np.uint(z),1,str(ID)])
 
         self.volume_seg.add_roi(voxel_mask=voxel_mask)
-        
+
         RGBW_channels = [0,4,2,1]
 
         self.image = MultiChannelVolume(
@@ -137,8 +137,8 @@ class TestMultiChannelVolumeConstructor(TestCase):
 
         neuroPAL_module.add(self.volume_seg)
         neuroPAL_module.add(self.ImagingVol)
-        neuroPAL_module.add(self.OptChannelRefs)
-        neuroPAL_module.add(self.OpticalChannelPlus)
+        # neuroPAL_module.add(self.OptChannelRefs)
+        # neuroPAL_module.add(self.OpticalChannelPlus)
 
         self.assertEqual(self.image.name, 'multichanvol')
         self.assertEqual(self.image.resolution, scale)
@@ -161,14 +161,14 @@ class TestMultiChannelVolumeConstructor(TestCase):
         self.assertContainerEqual(self.ImagingVol.optical_channel_plus[0], self.OpticalChannelPlus[0])
         self.assertContainerEqual(self.ImagingVol.optical_channel_plus[1], self.OpticalChannelPlus[1])
         self.assertContainerEqual(self.ImagingVol.Order_optical_channels, self.OptChannelRefs)
-        
+
         for i, row in blobs.iterrows():
             self.assertEqual(self.volume_seg.voxel_mask[i][0], row['X'])
             self.assertEqual(self.volume_seg.voxel_mask[i][1], row['Y'])
             self.assertEqual(self.volume_seg.voxel_mask[i][2], row['Z'])
             self.assertEqual(self.volume_seg.voxel_mask[i][4], str(row['ID']))
-        self.assertContainerEqual(self.volume_seg.imaging_volume, self.ImagingVol)   
-        
+        self.assertContainerEqual(self.volume_seg.imaging_volume, self.ImagingVol)
+
         for i, chan in enumerate(self.OpticalChannelPlus):
             #self.assertEqual(chan.name, channels[i][0])
             wave = channels[i][1]
@@ -181,7 +181,7 @@ class TestMultiChannelVolumeConstructor(TestCase):
             self.assertEqual(chan.emission_range, [emiss_mid-emiss_range/2, emiss_mid+emiss_range/2])
             self.assertEqual(chan.emission_lambda, emiss_mid)
 
-            self.assertEqual(self.OptChannelRefs.data[i], wave)
+            self.assertEqual(self.OptChannelRefs.data[i], chan)
 
 class TestMultiChannelVolumeRoundtrip(TestCase):
 
@@ -194,7 +194,7 @@ class TestMultiChannelVolumeRoundtrip(TestCase):
 
     def test_roundtrip(self):
         """Test that the constructor for each object sets values as expected."""
-        data = np.random.rand(240,1000,50,5)
+        data = np.random.randint(0,100,size=(240,1000,50,5))
         scale = [0.25, 0.3, 1.0]
         session_start = datetime.datetime.now()
 
@@ -233,7 +233,7 @@ class TestMultiChannelVolumeRoundtrip(TestCase):
             voxel_mask.append([np.uint(x),np.uint(y),np.uint(z),1,str(ID)])
 
         self.volume_seg.add_roi(voxel_mask=voxel_mask)
-        
+
         RGBW_channels = [0,4,2,1]
 
         self.image = MultiChannelVolume(
@@ -254,8 +254,8 @@ class TestMultiChannelVolumeRoundtrip(TestCase):
 
         neuroPAL_module.add(self.volume_seg)
         neuroPAL_module.add(self.ImagingVol)
-        neuroPAL_module.add(self.OptChannelRefs)
-        neuroPAL_module.add(self.OpticalChannelPlus)
+        # neuroPAL_module.add(self.OptChannelRefs)
+        # neuroPAL_module.add(self.OpticalChannelPlus)
 
         with NWBHDF5IO(self.path, mode='w') as io:
             io.write(self.nwbfile)
@@ -265,7 +265,7 @@ class TestMultiChannelVolumeRoundtrip(TestCase):
             self.assertContainerEqual(self.image, read_nwbfile.acquisition['multichanvol'])
             self.assertContainerEqual(self.ImagingVol, read_nwbfile.processing['NeuroPAL']['ImagingVolume'])
             self.assertContainerEqual(self.volume_seg, read_nwbfile.processing['NeuroPAL']['VolumeSegmentation'])
-            self.assertContainerEqual(self.OptChannelRefs, read_nwbfile.processing['NeuroPAL']['OpticalChannelRefs'])
+            self.assertContainerEqual(self.OptChannelRefs, read_nwbfile.processing['NeuroPAL']['ImagingVolume'].Order_optical_channels)
 
         self.tearDown()
 

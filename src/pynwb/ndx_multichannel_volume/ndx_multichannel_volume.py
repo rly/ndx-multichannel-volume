@@ -6,7 +6,7 @@ from collections.abc import Iterable
 import numpy as np
 from pynwb import register_class
 from hdmf.utils import docval, get_docval, popargs
-from pynwb.ophys import ImageSeries 
+from pynwb.ophys import ImageSeries
 from pynwb.core import NWBDataInterface
 from hdmf.common import DynamicTable
 from hdmf.utils import docval, popargs, get_docval, get_data_shape, popargs_to_dict
@@ -60,7 +60,8 @@ class ImagingVolume(NWBDataInterface):
     """An imaging plane and its metadata."""
 
     __nwbfields__ = ({'name': 'optical_channel_plus', 'child': True},
-                     'Order_optical_channels',
+                     {'name': 'Order_optical_channels', 'child': True},
+                    #  'Order_optical_channels',
                      'description',
                      'device',
                      'location',
@@ -207,7 +208,7 @@ class VolumeSegmentation(DynamicTable):
             {'name': 'name', 'type': str, 'doc': 'the name of the ROITableRegion', 'default': 'rois'})
     def create_roi_table_region(self, **kwargs):
         return self.create_region(**kwargs)
-    
+
 @register_class('MultiChannelVolume', 'ndx-multichannel-volume')
 class MultiChannelVolume(NWBDataInterface):
     """An imaging plane and its metadata."""
@@ -226,16 +227,16 @@ class MultiChannelVolume(NWBDataInterface):
             {'name': 'description', 'type': str, 'doc':'description of image'},
             {'name': 'RGBW_channels', 'doc': 'which channels in image map to RGBW', 'type': 'array_data', 'shape':[None]},
             {'name': 'data', 'doc': 'Volumetric multichannel data', 'type': 'array_data', 'shape':[None]*4},
-            {'name': 'Order_optical_channels', 'type':OpticalChannelReferences, 'doc':'Order of the optical channels in the data'}
+            # {'name': 'Order_optical_channels', 'type':OpticalChannelReferences, 'doc':'Order of the optical channels in the data'}
     )
-    
+
     def __init__(self, **kwargs):
         keys_to_set = ('resolution',
                        'description',
                        'RGBW_channels',
                        'data',
                        'imaging_volume',
-                       'Order_optical_channels'
+                    #    'Order_optical_channels'
                        )
         args_to_set = popargs_to_dict(keys_to_set, kwargs)
         super().__init__(**kwargs)

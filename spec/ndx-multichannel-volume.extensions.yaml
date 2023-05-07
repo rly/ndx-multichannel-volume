@@ -1,3 +1,14 @@
+datasets:
+- neurodata_type_def: OpticalChannelReferences
+  neurodata_type_inc: NWBData
+  dtype:
+    target_type: OpticalChannelPlus
+    reftype: object
+  dims:
+  - NumChannels
+  shape:
+  - null
+  doc: Ordered list of names of optical channels
 groups:
 - neurodata_type_def: CElegansSubject
   neurodata_type_inc: Subject
@@ -127,10 +138,6 @@ groups:
     - null
     - null
     doc: Volumetric multichannel data
-  groups:
-  - name: Order_optical_channels
-    neurodata_type_inc: OpticalChannelReferences
-    doc: Ordered list of names of the optical channels in the data
   links:
   - name: imaging_volume
     target_type: ImagingVolume
@@ -181,28 +188,17 @@ groups:
     doc: Describes reference frame of origin_coords and grid_spacing. See doc for
       imaging_plane for more detail and examples.
     quantity: '?'
+  - name: Order_optical_channels
+    neurodata_type_inc: OpticalChannelReferences
+    doc: Ordered list of names of the optical channels in the data
   groups:
   - neurodata_type_inc: OpticalChannelPlus
     doc: An optical channel used to record from an imaging volume
     quantity: '*'
-  - name: Order_optical_channels
-    neurodata_type_inc: OpticalChannelReferences
-    doc: Ordered list of names of the optical channels in the data
   links:
   - name: device
     target_type: Device
     doc: Link to the Device object that was used to record from this electrode.
-- neurodata_type_def: OpticalChannelReferences
-  neurodata_type_inc: NWBDataInterface
-  doc: wrapper for optical channel references dataset
-  datasets:
-  - name: channels
-    dtype: text
-    dims:
-    - NumChannels
-    shape:
-    - null
-    doc: Ordered list of names of optical channels
 - neurodata_type_def: OpticalChannelPlus
   neurodata_type_inc: OpticalChannel
   doc: An optical channel used to record from an imaging volume. Contains both emission
